@@ -77,7 +77,7 @@ export default class Drawer {
         this.ctx.fillRect(width - padding * this.gridGap, 0, padding * this.gridGap, height);
     }
 
-    // 核心啦
+    // 核心
     drawWave() {
         const {
             currentTime,
@@ -87,26 +87,35 @@ export default class Drawer {
                 audiobuffer: { sampleRate },
             },
         } = this.wf;
-
-
+        // currentTime 类型暂时不明，不知道是 int 的 second 还是什么
+        // channelData 是核心，类型是 Float32Array
+        // sampleRate 是来自 AudioBuffer 的，就是 Web 标准，一个浮点数，表示缓冲区数据的当前采样率。
+        // https://developer.mozilla.org/zh-CN/docs/Web/API/AudioBuffer/sampleRate
 
         const { width, height } = this.canvas; // 宽高
         const middle = height / 2;
-        const waveWidth = width - this.gridGap * padding * 2;
+        const waveWidth = width - this.gridGap * padding * 2; 
+        // ?
+        
         const startIndex = clamp(this.beginTime * sampleRate, 0, Infinity);
         const endIndex = clamp((this.beginTime + duration) * sampleRate, startIndex, Infinity);
-        const step = Math.floor((endIndex - startIndex) / waveWidth);
+        // 这俩 index 是整数还是什么？
+
+        const step = Math.floor((endIndex - startIndex) / waveWidth); 
+        // 这个算出来是什么？
+
         const cursorX = padding * this.gridGap + (currentTime - this.beginTime) * this.gridGap * 10;
 
         let stepIndex = 0;
         let xIndex = 0;
         let min = 1;
         let max = -1;
+        // 索引遍历
         for (let i = startIndex; i < endIndex; i += 1) {
-            stepIndex += 1;
-            const item = channelData[i] || 0;
+            stepIndex += 1; // 这个是纪录遍历到了哪里？
+            const item = channelData[i] || 0; // 取不到数据就是 0？
             if (item < min) {
-                min = item;
+                min = item; // 存最小值和最大值
             } else if (item > max) {
                 max = item;
             }

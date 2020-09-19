@@ -4,8 +4,14 @@ import { errorHandle } from './utils';
 // 注意这个 Decoder 和 Loader 是搭配使用的
 // Loader 会不断 emit loading 事件，然后把数据带过来
 
-// 输入：
-// 输出：
+// 输入：UInt8Array 
+// 输出：channelData 用于给 drawer.js 进行绘制
+// 何时触发：Loader 载入 url 里的数据，每次载入一点数据就触发（被 throttle 了，确保调用频率不会过高）
+
+// 核心是 AudioBuffer
+// 通过  this.audiobuffer.getChannelData(channel); 获得不同声道的数据
+// 存入 this.channelData
+// 绘制的时候用的就是 this.channelData
 
 export default class Decoder {
     constructor(wf) {
@@ -75,6 +81,11 @@ export default class Decoder {
     // 改变声道
     changeChannel(channel) {
         this.channelData = this.audiobuffer.getChannelData(channel);
+        // getChannelData
+        // https://developer.mozilla.org/zh-CN/docs/Web/API/AudioBuffer/getChannelData
+        // returns a Float32Array containing the PCM data associated with the channel
+        // channelData 的类型是 Float32Array
+
         this.wf.emit('channelData', this.channelData);
     }
 

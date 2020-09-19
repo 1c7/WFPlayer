@@ -55,8 +55,6 @@ export default class Loader {
                 // promise 里面就是数据 { value: theChunk, done: false }
                 // 如果读完了，就是： { value: undefined, done: true }
 
-                // 问题来了，这个 value 具体是什么？ string？
-
                 if (response.body && typeof response.body.getReader === 'function') {
                     // 如果能拿到 reader，并且 reader 是个函数
                     // 反正就是能正确读取到数据
@@ -64,6 +62,8 @@ export default class Loader {
                     // 读取到文件地址并保存
                     this.wf.emit('fileSize', this.fileSize);
                     this.reader = response.body.getReader();
+
+                    // 这个写法还挺复杂的，没看懂目的
                     return function read() {
                         return this.reader.read().then(({ done, value }) => {
                             // 这个 value 是核心，数据类型是 Uint8Array
@@ -80,7 +80,7 @@ export default class Loader {
                             this.wf.emit('downloading', this.loadSize / this.fileSize); // 加载了多少
                             this.data = mergeBuffer(this.data, value); // merge 到哪里去了
                             this.wf.emit('loading', this.data.slice()); // slice 好像只是复制数组
-                            return read.call(this);
+                            return read.call(this); // 这个好像就是递归，返回自己
                         });
                     }.call(this);
                 }
