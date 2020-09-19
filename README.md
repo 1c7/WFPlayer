@@ -1,14 +1,16 @@
 # WFPlayer
-代码 fork 自仓库: https://github.com/zhw2590582/WFPlayer
-这是一个音频可视化播放器, 只负责绘制音频波形图 (`使用 <canvas> 实现`)  
-其他的部分需要自己写（`<video>`)
+代码 fork 自仓库: https://github.com/zhw2590582/WFPlayer         
+fork 事件: 2020年9月19号    
+这是一个音频可视化播放器, 只负责绘制音频波形图 (`使用 <canvas> 实现`)      
+其他的部分需要自己写（比如视频部分要自己弄 `<video>`)   
 
 ## 目的 / 意义 / 说明
 这个只是 fork 之后读代码，写一些自己的注释，方便有需要时翻阅。     
 不是为了发 pull request 来改善原项目。    
 
 ## 学习目的
-理解 waveform 是怎么绘制到 canvas 上的
+理解 waveform 是怎么绘制到 canvas 上的。  
+理解波形图是怎么绘制的，算法是什么。    
 
 ## 学习笔记
 * 文件：都在 src/ 里，文件不多，9个。代码量不大
