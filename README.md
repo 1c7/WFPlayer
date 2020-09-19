@@ -138,7 +138,7 @@ var wf = new WFPlayer({
     channel: 0,
 
     // Duration of rendering
-    duration: 10,
+    duration: 10, // 渲染10秒
 
     // The ratio of spaces on both sides
     padding: 5,

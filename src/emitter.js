@@ -1,3 +1,6 @@
+// 事件相关，主要是 on(监听) 和 emit (发出)
+// 这样就不依赖第三方的包
+
 export default class Emitter {
     on(name, fn, ctx) {
         const e = this.e || (this.e = {});

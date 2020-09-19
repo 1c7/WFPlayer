@@ -1,4 +1,5 @@
 import { errorHandle } from './utils';
+// 没看懂 Template 的意义
 
 export default class Template {
     constructor(wf) {
@@ -29,6 +30,8 @@ export default class Template {
         }
     }
 
+    // 导出图片
+    // 导出 canvas 为图片
     exportImage() {
         const elink = document.createElement('a');
         elink.style.display = 'none';

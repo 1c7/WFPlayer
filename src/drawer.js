@@ -1,4 +1,5 @@
 import { durationToTime, clamp } from './utils';
+// 绘制
 
 export default class Drawer {
     constructor(wf) {
@@ -11,6 +12,7 @@ export default class Drawer {
 
         this.update();
 
+        // options 改了，当然需要 update 了
         wf.on('options', () => {
             this.update();
         });
@@ -20,15 +22,21 @@ export default class Drawer {
         });
     }
 
+    // 更新
     update() {
         const {
             currentTime,
             options: { cursor, grid, ruler, wave, duration, padding },
         } = this.wf;
-        this.gridNum = duration * 10 + padding * 2;
-        this.gridGap = this.canvas.width / this.gridNum;
-        this.beginTime = Math.floor(currentTime / duration) * duration;
+        // 数据取出来
 
+        // 几个关键的初始化，后面会大量用到
+        this.gridNum = duration * 10 + padding * 2; // 有多少个 grid
+        this.gridGap = this.canvas.width / this.gridNum; // grid 的间隔
+        this.beginTime = Math.floor(currentTime / duration) * duration;
+        // 这个开始时间为啥要这样计算？
+
+        // 发出渲染事件，进行通知，并且提供对应参数
         this.wf.emit('render', {
             padding,
             duration,
@@ -37,7 +45,9 @@ export default class Drawer {
             beginTime: this.beginTime,
         });
 
+        // 画背景
         this.drawBackground();
+        // 有 grid 就画 grid, 这几个 option 全部都是 true | false 的 Boolean 值
         if (grid) {
             this.drawGrid();
         }
@@ -55,14 +65,19 @@ export default class Drawer {
     drawBackground() {
         const { backgroundColor, paddingColor, padding } = this.wf.options;
         const { width, height } = this.canvas;
-        this.ctx.clearRect(0, 0, width, height);
+        this.ctx.clearRect(0, 0, width, height); // 擦除
+
+        // 填入背景颜色
         this.ctx.fillStyle = backgroundColor;
         this.ctx.fillRect(0, 0, width, height);
+        
+        // 填入padding，先填入左侧然后右侧
         this.ctx.fillStyle = paddingColor;
         this.ctx.fillRect(0, 0, padding * this.gridGap, height);
         this.ctx.fillRect(width - padding * this.gridGap, 0, padding * this.gridGap, height);
     }
 
+    // 核心啦
     drawWave() {
         const {
             currentTime,
@@ -72,6 +87,9 @@ export default class Drawer {
                 audiobuffer: { sampleRate },
             },
         } = this.wf;
+        
+
+
         const { width, height } = this.canvas;
         const middle = height / 2;
         const waveWidth = width - this.gridGap * padding * 2;
@@ -109,10 +127,13 @@ export default class Drawer {
         }
     }
 
+    // 画 grid
     drawGrid() {
         const { gridColor, pixelRatio } = this.wf.options;
+        // pixelRatio
         const { width, height } = this.canvas;
         this.ctx.fillStyle = gridColor;
+        // 遍历 gridNumber
         for (let index = 0; index < this.gridNum; index += 1) {
             this.ctx.fillRect(this.gridGap * index, 0, pixelRatio, height);
         }
@@ -121,14 +142,16 @@ export default class Drawer {
         }
     }
 
+    // 画时间尺度
     drawRuler() {
         const { rulerColor, pixelRatio, padding, rulerAtTop } = this.wf.options;
         const { height } = this.canvas;
         const fontSize = 11;
         const fontHeight = 15;
         const fontTop = 30;
+        // 一些基本的数据
         this.ctx.font = `${fontSize * pixelRatio}px Arial`;
-        this.ctx.fillStyle = rulerColor;
+        this.ctx.fillStyle = rulerColor; // ruler 的颜色
         let second = -1;
         for (let index = 0; index < this.gridNum; index += 1) {
             if (index && index >= padding && index <= this.gridNum - padding && (index - padding) % 10 === 0) {

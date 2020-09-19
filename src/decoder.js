@@ -1,14 +1,27 @@
 import throttle from 'lodash/throttle';
 import { errorHandle } from './utils';
+// 就是利用 web 平台提供的 API 进行解码
+// 注意这个 Decoder 和 Loader 是搭配使用的
+// Loader 会不断 emit loading 事件，然后把数据带过来
 
 export default class Decoder {
     constructor(wf) {
         this.wf = wf;
         this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        this.throttleDecodeAudioData = throttle(this.decodeAudioData, 1000);
-        this.audiobuffer = this.audioCtx.createBuffer(2, 22050, 44100);
-        this.channelData = new Float32Array();
+        // 拿到 audio context
 
+        this.throttleDecodeAudioData = throttle(this.decodeAudioData, 1000);
+        // https://www.lodashjs.com/docs/lodash.throttle
+        // 为啥要 throttle？
+
+        this.audiobuffer = this.audioCtx.createBuffer(2, 22050, 44100);
+        // 新建一个空白的 AudioBuffer
+        // https://developer.mozilla.org/zh-CN/docs/Web/API/AudioContext/createBuffer
+
+
+        this.channelData = new Float32Array(); // 频道数据
+
+        // 载入的时候调用这个
         this.wf.on('loading', uint8 => {
             this.throttleDecodeAudioData(uint8);
         });
@@ -18,13 +31,23 @@ export default class Decoder {
         const {
             options: { channel },
         } = this.wf;
+        // 这个  channel 是什么？
+        // Which audio channel to render
+        // 就是多声道的情况下，选择哪一个渲染，默认是0，也就是第一个声道
+
+        // 看看这里干了啥
+        // https://developer.mozilla.org/zh-CN/docs/Web/API/AudioContext/decodeAudioData
+        // 异步解码音频文件中的 ArrayBuffer
         this.audioCtx.decodeAudioData(
-            uint8.buffer,
+            uint8.buffer, // 数据
             audiobuffer => {
+                // 返回解析后的数据，类型是 AudioBuffer
+                // AudioBuffer接口表示存在内存里的一段短小的音频资源
+                // https://developer.mozilla.org/zh-CN/docs/Web/API/AudioBuffer
                 this.audiobuffer = audiobuffer;
                 this.wf.emit('audiobuffer', this.audiobuffer);
                 this.wf.emit('decodeing', this.audiobuffer.duration / this.wf.duration);
-                this.channelData = audiobuffer.getChannelData(channel);
+                this.channelData = audiobuffer.getChannelData(channel); // 返回一个 Float32Array
                 this.wf.emit('channelData', this.channelData);
             },
             error => {
@@ -33,11 +56,13 @@ export default class Decoder {
         );
     }
 
+    // 改变声道
     changeChannel(channel) {
         this.channelData = this.audiobuffer.getChannelData(channel);
         this.wf.emit('channelData', this.channelData);
     }
 
+    // 清空数据
     destroy() {
         this.audiobuffer = this.audioCtx.createBuffer(2, 22050, 44100);
         this.channelData = new Float32Array();

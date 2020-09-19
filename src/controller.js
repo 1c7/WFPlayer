@@ -1,10 +1,12 @@
 import throttle from 'lodash/throttle';
 import { clamp } from './utils';
+// 这个控制器是干啥的？
 
 export default class Controller {
     constructor(wf) {
         this.wf = wf;
         this.playTimer = null;
+        // 载入的时候做什么？
         this.wf.on('load', () => {
             this.clickInit();
             this.resizeInit();
@@ -12,6 +14,7 @@ export default class Controller {
         });
     }
 
+    // ?
     getTimeFromEvent(event) {
         const {
             currentTime,
@@ -26,6 +29,7 @@ export default class Controller {
         return time;
     }
 
+    // 初始化点击事件？
     clickInit() {
         const {
             template: { canvas },
@@ -42,6 +46,7 @@ export default class Controller {
         });
     }
 
+    // 
     resizeInit() {
         const {
             template,
