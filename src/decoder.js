@@ -61,7 +61,7 @@ export default class Decoder {
         // https://developer.mozilla.org/zh-CN/docs/Web/API/AudioContext/decodeAudioData
         // 异步解码音频文件中的 ArrayBuffer
         this.audioCtx.decodeAudioData(
-            uint8.buffer, // 数据
+            uint8.buffer, // 就是一个 ArrayBuffer, https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array
             audiobuffer => {
                 // 返回解析后的数据，类型是 AudioBuffer
                 // AudioBuffer接口表示存在内存里的一段短小的音频资源

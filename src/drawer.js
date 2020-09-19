@@ -187,6 +187,7 @@ export default class Drawer {
         }
     }
 
+    // 画指针
     drawCursor() {
         const {
             currentTime,
