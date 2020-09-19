@@ -4,7 +4,7 @@ import { durationToTime, clamp } from './utils';
 export default class Drawer {
     constructor(wf) {
         this.wf = wf;
-        this.canvas = wf.template.canvas;
+        this.canvas = wf.template.canvas; // 注意  canvas
         this.ctx = this.canvas.getContext('2d');
         this.gridNum = 0;
         this.gridGap = 0;
@@ -87,10 +87,10 @@ export default class Drawer {
                 audiobuffer: { sampleRate },
             },
         } = this.wf;
-        
 
 
-        const { width, height } = this.canvas;
+
+        const { width, height } = this.canvas; // 宽高
         const middle = height / 2;
         const waveWidth = width - this.gridGap * padding * 2;
         const startIndex = clamp(this.beginTime * sampleRate, 0, Infinity);

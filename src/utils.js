@@ -13,6 +13,8 @@ export class WFPlayerError extends Error {
     }
 }
 
+// 方便条件判断的，如果 false 就抛出错误
+// 其实这个错误也是个 class 啦
 export function errorHandle(condition, msg) {
     if (!condition) {
         throw new WFPlayerError(msg);

@@ -5,6 +5,21 @@ import { mergeBuffer } from './utils';
 
 // 最终结果: this.data 里面有数据了
 
+/*
+// 核心 https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer
+// ArrayBuffer 对象的说明：
+// The ArrayBuffer object is used to represent a generic, fixed-length raw binary data buffer.
+说白了就是用来表示二进制数据
+一个通用的，固定长度的数据
+It is an array of bytes
+often referred to in other languages as a "byte array"
+
+You cannot directly manipulate the contents of an ArrayBuffer; instead, you create one of the typed array objects
+不能直接操作，要用 type 才能操作
+
+You cannot directly manipulate the contents of an ArrayBuffer; instead, you create one of the typed array objects
+*/
+
 export default class Loader {
     constructor(wf) {
         this.wf = wf;
@@ -29,7 +44,19 @@ export default class Loader {
         })
             .then(response => {
                 // 这里读取的时候，就是直接 body.getReader()
+                // body 是一个 ReadableStream
+
+                // getReader() 是 ReadableStream.getReader()
+                // getReader() 返回的是 ReadableStreamDefaultReader
                 
+                // ReadableStreamDefaultReader 有一个 read() 方法
+                // read() 方法返回一个 promise
+                
+                // promise 里面就是数据 { value: theChunk, done: false }
+                // 如果读完了，就是： { value: undefined, done: true }
+
+                // 问题来了，这个 value 具体是什么？ string？
+
                 if (response.body && typeof response.body.getReader === 'function') {
                     // 如果能拿到 reader，并且 reader 是个函数
                     // 反正就是能正确读取到数据
@@ -39,6 +66,11 @@ export default class Loader {
                     this.reader = response.body.getReader();
                     return function read() {
                         return this.reader.read().then(({ done, value }) => {
+                            // 这个 value 是核心，数据类型是 Uint8Array
+                            // 这里 MDN 手册写得不够好
+                            // https://developer.mozilla.org/en-US/docs/Web/API/ReadableStreamDefaultReader
+                            // 应该把 value 的类型是 Uint8Array 这件事写的更清楚
+
                             if (done) {
                                 this.wf.emit('loadEnd'); // 读完了就 loadEnd 事件
                                 return null;
@@ -55,6 +87,9 @@ export default class Loader {
                 return response.arrayBuffer(); // 反正是返回一个 ArrayBuffer 对象
             })
             .then(arrayBuffer => {
+                // 这个 ArrayBuffer 本身就是一个对象
+                // 需要转成特定类型才能操作
+
                 if (arrayBuffer && arrayBuffer.byteLength) { // 确保上一步的确正确解析了
                     // 毕竟那个 URL 是有可能返回 404 或者其他奇怪数据的
                     const uint8 = new Uint8Array(arrayBuffer); // 改成一个 Uint8Array？

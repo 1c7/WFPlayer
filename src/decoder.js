@@ -4,6 +4,9 @@ import { errorHandle } from './utils';
 // 注意这个 Decoder 和 Loader 是搭配使用的
 // Loader 会不断 emit loading 事件，然后把数据带过来
 
+// 输入：
+// 输出：
+
 export default class Decoder {
     constructor(wf) {
         this.wf = wf;
@@ -24,6 +27,19 @@ export default class Decoder {
         // 载入的时候调用这个
         this.wf.on('loading', uint8 => {
             this.throttleDecodeAudioData(uint8);
+            // loading 的时候 throttle，为什么呢？
+
+            // 明白了，load 的速度有快有慢，取决于网速（和其他因素）
+
+            // 只有每次 load 到了一块新数据，
+            // 就会把新数据 append 道已经读取的数据（就是 merge 在一起）
+            // 成为一块新的整体
+
+            // 这个整体并不会因为函数被 throttle 造成数据丢失
+            // 这里只是降低调用频率，保证性能
+
+            // 因为 loading 这里不是每次传递过来新 load 的那一块数据
+            // 每次传递过来的都是一个整体
         });
     }
 

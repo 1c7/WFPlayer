@@ -1,10 +1,11 @@
 import { errorHandle } from './utils';
 // 没看懂 Template 的意义
+// 目前看来只是新建 canvas 然后放进容器里
 
 export default class Template {
     constructor(wf) {
         this.wf = wf;
-        this.canvas = null;
+        this.canvas = null; // canvas 默认空
         this.update();
     }
 
@@ -20,13 +21,13 @@ export default class Template {
                 'Cannot mount multiple instances on the same dom element, please destroy the previous instance first.',
             );
             errorHandle(clientWidth && clientHeight, 'The width and height of the container cannot be 0');
-            container.innerHTML = '';
-            this.canvas = document.createElement('canvas');
+            container.innerHTML = ''; // 清掉容器里所有东西
+            this.canvas = document.createElement('canvas'); // 创建一个 canvas 元素
             this.canvas.width = clientWidth * pixelRatio;
             this.canvas.height = clientHeight * pixelRatio;
-            this.canvas.style.width = '100%';
+            this.canvas.style.width = '100%'; // 占满容器
             this.canvas.style.height = '100%';
-            container.appendChild(this.canvas);
+            container.appendChild(this.canvas); // 加到容器里
         }
     }
 
