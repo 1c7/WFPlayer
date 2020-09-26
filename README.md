@@ -198,4 +198,34 @@ class Decoder 的任务就此完成。这个文件一共才45行代码。不长�
 这是个专门针对 Web 平台的波形绘制库（人话：只能跑在浏览器里）        
 依赖了 canvas, Audio 等 Web API   
 
-## 我学到了什么
+
+## 学会了什么
+* fetch 的 `response.body.getReader()`
+* getReader() 是 ReadableStream.getReader()
+* getReader() 返回的是 ReadableStreamDefaultReader
+* ReadableStreamDefaultReader 有一个 read() 方法   
+* 这个 read() 方法是读一小块数据，读的是 Uint8Array
+
+* Uint8Array
+* ArrayBuffer
+* Uint8Array 如何转换成 ArrayBuffer
+
+* decodeAudioData
+* AudioBuffer
+* getChannelData
+* Float32Array
+
+
+## 解析 `docs/` 里的代码
+这个就是官网的 demo   
+
+## 用了什么第三方库
+* Pickr 弹出选择颜色的窗口 https://github.com/Simonwep/pickr
+
+* ArtPlayer 做视频 (作者自己的)  https://github.com/zhw2590582/ArtPlayer   
+
+* powerange 做 slider https://github.com/abpetkov/powerange
+这是个2014年的项目，很老了
+
+## 详解
+* 只需要看 docs/assets/js/index.js 就可以了，其他的不重要  

@@ -8,9 +8,11 @@ var $downloading = document.querySelector('.downloading');
 var $decodeing = document.querySelector('.decodeing');
 var $pickers = Array.from(document.querySelectorAll('.color-picker'));
 var $range = Array.from(document.querySelectorAll('.range input'));
+// 这一大堆 querySelector 选中必须的元素
 
 $version.innerHTML = 'Beta ' + WFPlayer.version;
 
+// 先弄一个 Artplayer 把视频加载进来
 var art = new Artplayer({
     container: '.artplayer',
     url: 'https://zhw2590582.github.io/assets-cdn/video/your-name.mp4',
@@ -24,12 +26,14 @@ var art = new Artplayer({
 
 var wf = null;
 
+// 初始化波形图 player
 function initWFPlayer() {
     wf = new WFPlayer({
         container: '.waveform',
         cors: true,
     });
 
+    // 当特定事件发生时，通过 innerHTML 显示到页面上
     wf.on('fileSize', function (fileSize) {
         $filesize.innerHTML = (fileSize / 1024 / 1024).toFixed(3) + ' M';
     });
@@ -49,10 +53,10 @@ function initWFPlayer() {
 }
 
 initWFPlayer();
-art.on('ready', function () {
+art.on('ready', function () { // 当视频 ready 了之后
     art.seek = 3;
     wf.seek(3);
-    wf.load(art.template.$video);
+    wf.load(art.template.$video); 
 });
 
 art.on('seek', function () {

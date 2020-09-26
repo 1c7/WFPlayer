@@ -195,6 +195,7 @@ export default class Drawer {
         } = this.wf;
         const { height } = this.canvas;
         this.ctx.fillStyle = cursorColor;
+        // 算出 X 位置, y 为0，宽度为最小单位，高度满
         this.ctx.fillRect(
             padding * this.gridGap + (currentTime - this.beginTime) * this.gridGap * 10,
             0,
